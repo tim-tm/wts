@@ -1,0 +1,4 @@
+__pycache__/
+.venv/
+data.*
+dewiki-multistream5.xml
