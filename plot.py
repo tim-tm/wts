@@ -22,7 +22,10 @@ for first in pages:
     sims = session.query(Similarity) \
                   .filter(Similarity.first == first.id) \
                   .all()
-    vals = [round(sim.similarity, 2) for sim in sims]
+    vals = []
+    for sim in sims:
+        val = round(sim.similarity, 2)
+        vals.append(val)
     sims_vals.append(vals)
 
 nlen = len(pages)
@@ -37,16 +40,18 @@ for i, page in enumerate(pages):
     pages_names[i].append(page.title)
 
 table = ax.table(cellText=pages_names,
-                 colLabels=["Abkürzung", "Titel"],
+                 colLabels=["Abkürzung", "Artikelname"],
                  loc="center", cellLoc="center")
 table.auto_set_font_size(False)
 table.set_fontsize(12)
 table.auto_set_column_width(col=[0, 1])
+table.scale(1.5, 1.5)
 fig.tight_layout()
-fig.savefig("fig/table.png")
+fig.savefig("fig/table.png", dpi=150)
 
 fig, ax = plt.subplots()
-ax.imshow(sims_vals)
+heatmap = ax.imshow(sims_vals, cmap="bwr")
+fig.colorbar(heatmap)
 
 ticks = np.arange(nlen)
 ax.set_xticks(ticks,
@@ -56,12 +61,12 @@ ax.set_xticks(ticks,
 ax.set_yticks(ticks,
               labels=pages_abbrevs)
 
-for i in range(nlen):
-    for j in range(nlen):
-        ax.text(j, i, sims_vals[i][j],
-                ha="center", va="center",
-                color="black")
+# for i in range(nlen):
+#     for j in range(nlen):
+#         ax.text(j, i, sims_vals[i][j],
+#                 ha="center", va="center",
+#                 color="black")
 
 ax.set_title("Ähnlichkeit nach Artikelabkürzung")
 fig.tight_layout()
-fig.savefig("fig/heatmap.png")
+fig.savefig("fig/heatmap.png", dpi=150)
